@@ -9,6 +9,7 @@ import openai
 from langchain.llms import AzureOpenAI
 from langchain import PromptTemplate
 from langchain.output_parsers import StructuredOutputParser, ResponseSchema
+from langchain.schema import OutputParserException
 
 # Configure OpenAI API
 openai.api_type = "azure"
@@ -78,17 +79,21 @@ def check_software(caption, vendor):
                                  vendor=vendor,
                                  format_instructions=format_instructions)
 
-    # invoke openai to do the job
-    print("-----------")
-    print(f"Final Prompt: {final_prompt}")
-    resp = llm(final_prompt)
-    # replace '\' with '$' to avoid ParserException: Got invalid JSON object. Error: Invalid \escape
-    resp = resp.replace('\\', '$')
-    print(f"LLM Output: {resp}")
-    ret = output_parser.parse(resp)
-    print(f"Output Parsed: {ret}")
-    print("-----------\n")
-
+    # invoke openai to do the job and catch exception
+    try:
+        print("-----------")
+        print(f"Final Prompt: {final_prompt}")
+        resp = llm(final_prompt)
+        # replace '\' with '$' to avoid ParserException: Got invalid JSON object. Error: Invalid \escape
+        resp = resp.replace('\\', '$')
+        print(f"LLM Output: {resp}")
+        ret = output_parser.parse(resp)
+        print(f"Output Parsed: {ret}")
+        print("-----------\n")
+    except OutputParserException as e:
+        print(f"Error: {e}")
+        ret = {"scale": -1, "brief": "OutputParserException"}
+    
     return ret["scale"], ret["brief"]
 
 
