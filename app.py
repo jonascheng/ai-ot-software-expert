@@ -79,13 +79,15 @@ def check_software(caption, vendor):
                                  format_instructions=format_instructions)
 
     # invoke openai to do the job
-    resp = output_parser.parse(llm(final_prompt))
     print("-----------")
     print(f"Final Prompt: {final_prompt}")
+    resp = llm(final_prompt)
     print(f"LLM Output: {resp}")
+    ret = output_parser.parse(resp)
+    print(f"Output Parsed: {ret}")
     print("-----------\n")
 
-    return resp["scale"], resp["brief"]
+    return ret["scale"], ret["brief"]
 
 
 # write the result to a csv file
