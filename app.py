@@ -82,6 +82,8 @@ def check_software(caption, vendor):
     print("-----------")
     print(f"Final Prompt: {final_prompt}")
     resp = llm(final_prompt)
+    # replace '\' with '$' to avoid ParserException: Got invalid JSON object. Error: Invalid \escape
+    resp = resp.replace('\\', '$')
     print(f"LLM Output: {resp}")
     ret = output_parser.parse(resp)
     print(f"Output Parsed: {ret}")
