@@ -6,4 +6,4 @@ WORKDIR /app
 COPY . .
 RUN pip install -r requirements.txt
 
-CMD [ "python", "/app/app-llama_index.py" ]
+CMD [ "python", "/app/app.py" ]
